@@ -7,7 +7,7 @@ def main_menu():
             [KeyboardButton(text="🔍 Find"), KeyboardButton(text="📋 See all")],
             [KeyboardButton(text="➕ Add contact"), KeyboardButton(text="✏️ Edit contact")],
             [KeyboardButton(text="🗑 Delete contact"), KeyboardButton(text="🔔 Reminders")],
-            [KeyboardButton(text="📋 Шаблоны"), KeyboardButton(text="✉️ Mailings")],
+            [KeyboardButton(text="📋 Шаблоны"), KeyboardButton(text="🔗 Gmail")],
         ],
         resize_keyboard=True
     )
