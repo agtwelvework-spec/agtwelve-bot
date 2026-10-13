@@ -47,18 +47,24 @@ def health():
     return "OK", 200
 
 
+import traceback
+
 @app.route("/oauth/callback")
 def oauth_callback():
     """Google возвращает сюда с code и state."""
     code = request.args.get("code")
     user_id = request.args.get("state")
 
+    print(f"🔵 OAuth callback: code={code[:20] if code else None}..., state={user_id}", flush=True)
+
     if not code or not user_id:
         return "Ошибка: нет code или state", 400
 
     try:
         refresh_token, email = exchange_code(code)
+        print(f"✅ Exchange OK: {email}", flush=True)
         repository.save_gmail_integration(int(user_id), refresh_token, email)
+        print(f"✅ Saved integration for user {user_id}", flush=True)
         return """
         <html><body style="font-family:sans-serif;text-align:center;padding:50px">
         <h1>✅ Gmail подключён!</h1>
@@ -66,6 +72,8 @@ def oauth_callback():
         </body></html>
         """
     except Exception as e:
+        print(f"❌ OAuth error: {e}", flush=True)
+        traceback.print_exc()
         return f"Ошибка: {e}", 500
 
 
