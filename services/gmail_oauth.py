@@ -12,12 +12,14 @@ SCOPES = [
 REDIRECT_URI = "https://agtwelve-bot.onrender.com/oauth/callback"
 CREDENTIALS_FILE = "credentials.json"
 
+
 def get_auth_url(user_id):
+    """Сгенерировать OAuth-ссылку для юзера."""
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE,
         scopes=SCOPES,
         redirect_uri=REDIRECT_URI,
-        autogenerate_code_verifier=False,   # ← вот это
+        autogenerate_code_verifier=False,
     )
     auth_url, _ = flow.authorization_url(
         access_type="offline",
@@ -29,19 +31,20 @@ def get_auth_url(user_id):
 
 
 def exchange_code(code):
+    """Обменять code на refresh_token и email."""
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE,
         scopes=SCOPES,
         redirect_uri=REDIRECT_URI,
-        autogenerate_code_verifier=False,   # ← и вот это
+        autogenerate_code_verifier=False,
     )
     flow.fetch_token(code=code)
     creds = flow.credentials
 
-    # Получаем email юзера
-    service = build("gmail", "v1", credentials=creds)
-    profile = service.users().getProfile(userId="me").execute()
-    email = profile.get("emailAddress")
+    # Получаем email через oauth2 API (а не Gmail)
+    oauth2_service = build("oauth2", "v2", credentials=creds)
+    user_info = oauth2_service.userinfo().get().execute()
+    email = user_info.get("email")
 
     return creds.refresh_token, email
 
