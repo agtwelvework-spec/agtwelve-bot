@@ -677,8 +677,19 @@ async def mail_send(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.edit_text("📤 Отправляю...")
     await callback.answer()
 
-    # Пока используем Gmail из config (твой), позже — из gmail_integrations
+    # Проверяем, подключён ли Gmail у юзера
+    integration = repository.get_gmail_integration(user_id)
+    if not integration:
+        await callback.message.edit_text(
+            "⚠️ Сначала подключи Gmail.\n\n"
+            "Отправь /connect_gmail и пройди авторизацию."
+        )
+        return
+
     ok, err = mailer.send_email(
+        user_id=user_id,
+        user_email=integration["email"],
+        refresh_token=integration["refresh_token"],
         to=c["email"],
         subject=data["subject"],
         body=data["body"],
