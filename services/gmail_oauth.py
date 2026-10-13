@@ -5,7 +5,10 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 
-SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+SCOPES = [
+    "https://www.googleapis.com/auth/gmail.send",
+    "https://www.googleapis.com/auth/userinfo.email",
+]
 REDIRECT_URI = "https://agtwelve-bot.onrender.com/oauth/callback"
 CREDENTIALS_FILE = "credentials.json"
 
