@@ -80,6 +80,17 @@ def oauth_callback():
 def run_bot():
     async def main():
         init_db()
+# Проверка таблиц
+        try:
+            from database.db import get_connection
+            conn = get_connection()
+            tables = [r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()]
+            print(f"📋 Таблицы в БД: {tables}", flush=True)
+            conn.close()
+        except Exception as e:
+            print(f"⚠️ Ошибка проверки БД: {e}", flush=True)
+
+        bot = Bot(token=TOKEN)
         restore_credentials()
         bot = Bot(token=TOKEN)
         dp = Dispatcher()
