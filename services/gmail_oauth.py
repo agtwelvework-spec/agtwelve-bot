@@ -6,6 +6,7 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 
 SCOPES = [
+    "openid",
     "https://www.googleapis.com/auth/gmail.send",
     "https://www.googleapis.com/auth/userinfo.email",
 ]
