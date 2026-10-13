@@ -55,7 +55,6 @@ def init_db():
         )
     """)
 
-    # Gmail-интеграции для мультипользовательности
     cur.execute("""
         CREATE TABLE IF NOT EXISTS gmail_integrations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,4 +75,4 @@ def init_db():
 
     conn.commit()
     conn.close()
-    print("База готова.")
+    print("База готова.", flush=True)
