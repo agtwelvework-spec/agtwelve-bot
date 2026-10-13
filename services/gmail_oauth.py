@@ -11,11 +11,11 @@ CREDENTIALS_FILE = "credentials.json"
 
 
 def get_auth_url(user_id):
-    """Сгенерировать OAuth-ссылку для юзера."""
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE,
         scopes=SCOPES,
         redirect_uri=REDIRECT_URI,
+        autogenerate_code_verifier=False,   # ← вот это
     )
     auth_url, _ = flow.authorization_url(
         access_type="offline",
@@ -27,11 +27,11 @@ def get_auth_url(user_id):
 
 
 def exchange_code(code):
-    """Обменять code на refresh_token и email."""
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE,
         scopes=SCOPES,
         redirect_uri=REDIRECT_URI,
+        autogenerate_code_verifier=False,   # ← и вот это
     )
     flow.fetch_token(code=code)
     creds = flow.credentials
