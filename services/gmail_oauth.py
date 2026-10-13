@@ -9,7 +9,6 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 REDIRECT_URI = "https://agtwelve-bot.onrender.com/oauth/callback"
 CREDENTIALS_FILE = "credentials.json"
 
-
 def get_auth_url(user_id):
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE,
