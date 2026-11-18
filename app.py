@@ -9,7 +9,7 @@ from aiogram import Bot, Dispatcher
 from config import TOKEN
 from database.db import init_db
 from database import repository
-from handlers import start, contacts, templates, reminders, gmail_auth
+from handlers import start, contacts, templates, reminders, gmail_auth, campaigns
 from services.gmail_oauth import exchange_code
 
 app = Flask(__name__)
