@@ -72,7 +72,49 @@ def init_db():
     cur.execute("CREATE INDEX IF NOT EXISTS idx_history_user ON history(user_id)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_templates_user ON templates(user_id)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_gmail_user ON gmail_integrations(user_id)")
-
+    # ─── ТАБЛИЦЫ ДЛЯ РАССЫЛОК ───
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS campaigns (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            template_id INTEGER,
+            subject TEXT,
+            body TEXT,
+            genre_filter TEXT,
+            status TEXT DEFAULT 'draft',
+            scheduled_at DATETIME,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS campaign_recipients (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            campaign_id INTEGER NOT NULL,
+            contact_id INTEGER NOT NULL,
+            status TEXT DEFAULT 'pending',
+            sent_at DATETIME,
+            error TEXT,
+            UNIQUE(campaign_id, contact_id),
+            FOREIGN KEY (campaign_id) REFERENCES campaigns (id) ON DELETE CASCADE,
+            FOREIGN KEY (contact_id) REFERENCES contacts (id) ON DELETE CASCADE
+        )
+    """)
+    
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS campaign_attachments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            campaign_id INTEGER NOT NULL,
+            file_path TEXT NOT NULL,
+            file_name TEXT NOT NULL,
+            size_bytes INTEGER,
+            FOREIGN KEY (campaign_id) REFERENCES campaigns (id) ON DELETE CASCADE
+        )
+    """)
+    
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_campaigns_user ON campaigns(user_id)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_recipients_status ON campaign_recipients(campaign_id, status)")
     conn.commit()
     conn.close()
     print("База готова.", flush=True)
