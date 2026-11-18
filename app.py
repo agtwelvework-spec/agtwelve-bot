@@ -99,6 +99,7 @@ def run_bot():
         dp.include_router(templates.router)
         dp.include_router(reminders.router)
         dp.include_router(gmail_auth.router)
+        dp.include_router(campaigns.router)
         print("Бот запущен...")
         await dp.start_polling(bot, handle_signals=False)
 
